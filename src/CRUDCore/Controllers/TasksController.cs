@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CRUDCore.Data;
+using CRUDCore.Helpers;
+using CRUDCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CRUDCore.Data;
-using CRUDCore.Models;
-using CRUDCore.Helpers;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CRUDCore.Controllers
 {
@@ -17,14 +15,14 @@ namespace CRUDCore.Controllers
 
         public TasksController(SchoolContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Tasks
         public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
             ViewBag.currentFilter = searchString;
-            var tasks = from s in _context.Tasks select s;
+            var tasks = from s in _context.Tasks.Include(x => x.CategoryTask) select s;
             if (searchString != null)
             {
                 page = 1;
@@ -38,7 +36,7 @@ namespace CRUDCore.Controllers
 
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 3;
-            return View(await PaginatedList<Tasks>.CreateAsync(tasks.OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize));
+            return View(await PaginatedList<Tasks>.CreateAsync(tasks.AsNoTracking().OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: Tasks/Details/5
@@ -49,7 +47,7 @@ namespace CRUDCore.Controllers
                 return NotFound();
             }
 
-            var tasks = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
+            var tasks = await _context.Tasks.Include(x => x.CategoryTask).SingleOrDefaultAsync(m => m.ID == id);
             if (tasks == null)
             {
                 return NotFound();
@@ -61,11 +59,14 @@ namespace CRUDCore.Controllers
         // GET: Tasks/Create
         public IActionResult Create()
         {
-            return View();
+            var cateTasks = from s in _context.CategoryTasks select s;
+            var model = new Tasks();
+            model.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
+            return View(model);
         }
 
         // POST: Tasks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -90,15 +91,17 @@ namespace CRUDCore.Controllers
             }
 
             var tasks = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
+            var cateTasks = from s in _context.CategoryTasks select s;
             if (tasks == null)
             {
                 return NotFound();
             }
+            tasks.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
             return View(tasks);
         }
 
         // POST: Tasks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -139,7 +142,7 @@ namespace CRUDCore.Controllers
             try
             {
                 var task = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
-                if(task == null)
+                if (task == null)
                     return Json(new
                     {
                         status = false,

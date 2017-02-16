@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +9,7 @@ namespace CRUDCore.Models
     {
         public int ID { get; set; }
 
-        [Display(Name = "Id Category Task")]
+        [Display(Name = "In Category Task")]
         public int IdCategoryTask { get; set; }
 
         [Required]
@@ -34,5 +35,7 @@ namespace CRUDCore.Models
 
         [ForeignKey("IdCategoryTask")]
         public virtual CategoryTask CategoryTask { get; set; }
+
+        public SelectList CategoryTasks { get; set; }
     }
 }

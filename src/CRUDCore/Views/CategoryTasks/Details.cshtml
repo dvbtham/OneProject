@@ -31,6 +31,42 @@
         }
         @Html.DisplayFor(modelItem => status)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tasks)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>From Date</th>
+                    <th>Deadline Date</th>
+                    <th>Unit percent</th>
+                    <th>Quick edit</th>
+                </tr>
+                @foreach (var item in Model.Tasks)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FromDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DeadlineDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UnitPer)
+                        </td>
+                        <td>
+                            <a asp-action="Index" asp-controller="Tasks"> List </a> |
+                            <a asp-action="Edit" asp-controller="Tasks" asp-route-id="@item.ID"> Edit </a> |
+                            <a asp-action="Details" asp-controller="Tasks" asp-route-id="@item.ID"> Details </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
         
     </dl>
 </div>

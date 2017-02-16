@@ -49,7 +49,7 @@ namespace CRUDCore.Controllers
                 return NotFound();
             }
 
-            var categoryTask = await _context.CategoryTasks.SingleOrDefaultAsync(m => m.ID == id);
+            var categoryTask = await _context.CategoryTasks.Include(x => x.Tasks).SingleOrDefaultAsync(m => m.ID == id);
             if (categoryTask == null)
             {
                 return NotFound();

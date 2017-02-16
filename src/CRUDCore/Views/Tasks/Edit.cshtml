@@ -22,7 +22,7 @@
         <div class="form-group">
             <label asp-for="IdCategoryTask" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="IdCategoryTask" class="form-control" />
+                <select asp-for="IdCategoryTask" asp-items="@Model.CategoryTasks" class="form-control"></select>
                 <span asp-validation-for="IdCategoryTask" class="text-danger" />
             </div>
         </div>

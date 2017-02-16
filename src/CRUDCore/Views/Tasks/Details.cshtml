@@ -9,53 +9,56 @@
 <div>
     <h4>Tasks</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IdCategoryTask)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IdCategoryTask)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.FromDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.FromDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DeadlineDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DeadlineDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UnitPer)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UnitPer)%
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd>
-            @{
-                var status = Model.IsActive == true ? "Actived" : "UnActived";
-            }
-            @Html.DisplayFor(modelItem => status)
-        </dd>
-    </dl>
+    <table class="table table-bordered">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.IdCategoryTask)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.CategoryTask.Title)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.FromDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FromDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.DeadlineDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DeadlineDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.UnitPer)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.UnitPer)%
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </dt>
+            <dd>
+                @{
+                    var status = Model.IsActive == true ? "Actived" : "UnActived";
+                }
+                @Html.DisplayFor(modelItem => status)
+            </dd>
+        </dl>
+    </table>
+   
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |

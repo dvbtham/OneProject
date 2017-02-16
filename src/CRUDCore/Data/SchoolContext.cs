@@ -14,8 +14,10 @@ namespace CRUDCore.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Tasks>().Ignore(x => x.CategoryTasks);
             modelBuilder.Entity<CategoryTask>().ToTable("CategoryTasks");
             modelBuilder.Entity<Tasks>().ToTable("Tasks");
+            modelBuilder.Entity<CategoryTask>().HasMany(x => x.Tasks).WithOne(c => c.CategoryTask);
         }
     }
 }

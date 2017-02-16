@@ -2,7 +2,7 @@
 @model PaginatedList<CRUDCore.Models.CategoryTask>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index - Category Tasks";
 }
 
 <h2>Index</h2>
@@ -49,7 +49,7 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a href ="#" data-id="@item.ID" id="btnCateTaskDelete">Delete</a>
             </td>
         </tr>
 }
@@ -73,3 +73,7 @@
    class="btn btn-default @nextDisabled btn">
     Next
 </a>
+
+@section scripts{
+<script src="~/js/deleteItems.js"></script>
+}

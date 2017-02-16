@@ -11,7 +11,7 @@ using CRUDCore.Helpers;
 
 namespace CRUDCore.Controllers
 {
-    public class TasksController : Controller
+    public class TasksController : BaseController
     {
         private readonly SchoolContext _context;
 
@@ -75,6 +75,7 @@ namespace CRUDCore.Controllers
             {
                 _context.Add(tasks);
                 await _context.SaveChangesAsync();
+                SetAlert("Item Added Successfully", "success");
                 return RedirectToAction("Index");
             }
             return View(tasks);
@@ -114,6 +115,7 @@ namespace CRUDCore.Controllers
                 {
                     _context.Update(tasks);
                     await _context.SaveChangesAsync();
+                    SetAlert("Item Updated Successfully", "success");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -131,32 +133,34 @@ namespace CRUDCore.Controllers
             return View(tasks);
         }
 
-        // GET: Tasks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        public async Task<JsonResult> Delete(int id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var task = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
+                if(task == null)
+                    return Json(new
+                    {
+                        status = false,
+                        message = "Not found!"
+                    });
+                _context.Tasks.Remove(task);
+                await _context.SaveChangesAsync();
+                SetAlert("Item Deleted Successfully", "success");
+                return Json(new
+                {
+                    status = true
+                });
             }
-
-            var tasks = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
-            if (tasks == null)
+            catch (DbUpdateException ex)
             {
-                return NotFound();
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
             }
-
-            return View(tasks);
-        }
-
-        // POST: Tasks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tasks = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
-            _context.Tasks.Remove(tasks);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
         }
 
         private bool TasksExists(int id)

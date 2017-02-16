@@ -1,1 +1,2 @@
-﻿// Write your Javascript code.
+﻿$('#AlertBox').removeClass('hide');
+$('#AlertBox').delay(3000).slideUp(500);

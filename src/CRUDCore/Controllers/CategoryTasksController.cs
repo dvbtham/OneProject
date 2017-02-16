@@ -11,7 +11,7 @@ using CRUDCore.Helpers;
 
 namespace CRUDCore.Controllers
 {
-    public class CategoryTasksController : Controller
+    public class CategoryTasksController : BaseController
     {
         private readonly SchoolContext _context;
 
@@ -35,10 +35,10 @@ namespace CRUDCore.Controllers
             }
             if (!string.IsNullOrEmpty(searchString))
                 categoryTasks = categoryTasks.Where(x => x.Title.Contains(searchString));
-           
+
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 3;
-            return View(await PaginatedList<CategoryTask>.CreateAsync(categoryTasks.OrderByDescending(x=>x.Title).AsNoTracking(), page ?? 1, pageSize));
+            return View(await PaginatedList<CategoryTask>.CreateAsync(categoryTasks.OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: CategoryTasks/Details/5
@@ -75,6 +75,7 @@ namespace CRUDCore.Controllers
             {
                 _context.Add(categoryTask);
                 await _context.SaveChangesAsync();
+                SetAlert("Item Added Successfully", "success");
                 return RedirectToAction("Index");
             }
             return View(categoryTask);
@@ -114,6 +115,7 @@ namespace CRUDCore.Controllers
                 {
                     _context.Update(categoryTask);
                     await _context.SaveChangesAsync();
+                    SetAlert("Item Updated Successfully", "success");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -131,32 +133,34 @@ namespace CRUDCore.Controllers
             return View(categoryTask);
         }
 
-        // GET: CategoryTasks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        public async Task<JsonResult> Delete(int id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var categoryTask = await _context.CategoryTasks.SingleOrDefaultAsync(m => m.ID == id);
+                if (categoryTask == null)
+                    return Json(new
+                    {
+                        status = false,
+                        message = "Not found!"
+                    });
+                _context.CategoryTasks.Remove(categoryTask);
+                await _context.SaveChangesAsync();
+                SetAlert("Item Deleted Successfully", "success");
+                return Json(new
+                {
+                    status = true
+                });
             }
-
-            var categoryTask = await _context.CategoryTasks.SingleOrDefaultAsync(m => m.ID == id);
-            if (categoryTask == null)
+            catch (DbUpdateException ex)
             {
-                return NotFound();
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
             }
-
-            return View(categoryTask);
-        }
-
-        // POST: CategoryTasks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var categoryTask = await _context.CategoryTasks.SingleOrDefaultAsync(m => m.ID == id);
-            _context.CategoryTasks.Remove(categoryTask);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
         }
 
         private bool CategoryTaskExists(int id)

@@ -29,7 +29,7 @@
         <div class="form-group">
             <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger" />
             </div>
         </div>
@@ -64,7 +64,8 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="button" onclick="window.location.href = '/Task/Index'" value="Cancel" class="btn btn-default" />
             </div>
         </div>
     </div>

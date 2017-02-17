@@ -32,7 +32,7 @@ namespace CRUDCore.Controllers
                 searchString = currentFilter;
             }
             if (!string.IsNullOrEmpty(searchString))
-                tasks = tasks.Where(x => x.Title.Contains(searchString));
+                tasks = tasks.Where(x => x.Title.Contains(searchString) || x.CategoryTask.Title.Contains(searchString));
 
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 3;

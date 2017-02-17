@@ -31,7 +31,7 @@ namespace CRUDCore.Models
         public float UnitPer { get; set; }
 
         [Display(Name = "Status")]
-        public bool IsActive { get; set; }
+        public bool IsActived { get; set; }
 
         [ForeignKey("IdCategoryTask")]
         public virtual CategoryTask CategoryTask { get; set; }

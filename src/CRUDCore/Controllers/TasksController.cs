@@ -11,66 +11,124 @@ namespace CRUDCore.Controllers
 {
     public class TasksController : BaseController
     {
-        private readonly SchoolContext _context;
+        private readonly TaskManagementDbContext _context;
 
-        public TasksController(SchoolContext context)
+        public TasksController(TaskManagementDbContext context)
         {
             _context = context;
         }
-
-        // GET: Tasks
+        
         public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
             ViewBag.currentFilter = searchString;
             var tasks = from s in _context.Tasks.Include(x => x.CategoryTask) select s;
-            if (searchString != null)
+            
+            if (!string.IsNullOrEmpty(searchString))
             {
                 page = 1;
+                tasks = tasks.Where(x => x.Title.Contains(searchString) || x.CategoryTask.Title.Contains(searchString));
             }
             else
             {
                 searchString = currentFilter;
             }
-            if (!string.IsNullOrEmpty(searchString))
-                tasks = tasks.Where(x => x.Title.Contains(searchString) || x.CategoryTask.Title.Contains(searchString));
-
+            
             ViewData["CurrentFilter"] = searchString;
-            int pageSize = 3;
-            return View(await PaginatedList<Tasks>.CreateAsync(tasks.AsNoTracking().OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize));
+            int pageSize = 5;
+            var model = await PaginatedList<Tasks>
+                .CreateAsync(tasks.AsNoTracking()
+                .OrderByDescending(x => x.Title)
+                .AsNoTracking(), page ?? 1, pageSize);
+            return View(model);
         }
-
-        // GET: Tasks/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var tasks = await _context.Tasks.Include(x => x.CategoryTask).SingleOrDefaultAsync(m => m.ID == id);
+            var tasks = await _context.Tasks.Include(x => x.CategoryTask).FirstOrDefaultAsync(m => m.ID == id);
             if (tasks == null)
             {
                 return NotFound();
             }
-
             return View(tasks);
         }
-
-        // GET: Tasks/Create
-        public IActionResult Create()
+        
+        public IActionResult Manager(int id)
         {
+            ViewBag.Id = id;
             var cateTasks = from s in _context.CategoryTasks select s;
-            var model = new Tasks();
-            model.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
-            return View(model);
+            if(id > 0)
+            {
+                var tasks =  _context.Tasks.FirstOrDefault(m => m.ID == id);
+                tasks.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
+                return View(tasks);
+            }
+            else
+            {
+                var model = new Tasks();
+                model.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
+                return View(model);
+            }
         }
 
-        // POST: Tasks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,DeadlineDate,Description,FromDate,IdCategoryTask,IsActive,Title,UnitPer")] Tasks tasks)
+        public IActionResult Manager(int id, Tasks taskModel)
+        {
+            var cateTasks = from s in _context.CategoryTasks select s;
+            if (id > 0)
+            {
+                #region Edit Tasks
+                if (id != taskModel.ID)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(taskModel);
+                        _context.SaveChanges();
+                        SetAlert("Item Updated Successfully", "success");
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!TasksExists(taskModel.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction("Index");
+                }
+                return View(taskModel);
+                #endregion
+            }
+            else
+            {
+                #region Create Tasks
+                if (ModelState.IsValid)
+                {
+                    _context.Add(taskModel);
+                     _context.SaveChanges();
+                    SetAlert("Item Added Successfully", "success");
+                    return RedirectToAction("Index");
+                }
+                return View(taskModel);
+                #endregion
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Tasks tasks)
         {
             if (ModelState.IsValid)
             {
@@ -81,31 +139,10 @@ namespace CRUDCore.Controllers
             }
             return View(tasks);
         }
-
-        // GET: Tasks/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tasks = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
-            var cateTasks = from s in _context.CategoryTasks select s;
-            if (tasks == null)
-            {
-                return NotFound();
-            }
-            tasks.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
-            return View(tasks);
-        }
-
-        // POST: Tasks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,DeadlineDate,Description,FromDate,IdCategoryTask,IsActive,Title,UnitPer")] Tasks tasks)
+        public async Task<IActionResult> Edit(int id, Tasks tasks)
         {
             if (id != tasks.ID)
             {
@@ -137,11 +174,11 @@ namespace CRUDCore.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Delete(int id)
+        public JsonResult Delete(int id)
         {
             try
             {
-                var task = await _context.Tasks.SingleOrDefaultAsync(m => m.ID == id);
+                var task = _context.Tasks.FirstOrDefault(m => m.ID == id);
                 if (task == null)
                     return Json(new
                     {
@@ -149,7 +186,7 @@ namespace CRUDCore.Controllers
                         message = "Not found!"
                     });
                 _context.Tasks.Remove(task);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 SetAlert("Item Deleted Successfully", "success");
                 return Json(new
                 {

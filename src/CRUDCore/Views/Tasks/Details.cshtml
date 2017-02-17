@@ -1,66 +1,55 @@
 @model CRUDCore.Models.Tasks
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Title;
 }
-
-<h2>Details</h2>
-
-<div>
-    <h4>Tasks</h4>
-    <hr />
-    <table class="table table-bordered">
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.IdCategoryTask)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.CategoryTask.Title)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.FromDate)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.FromDate)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.DeadlineDate)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.DeadlineDate)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.UnitPer)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.UnitPer)%
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </dt>
-            <dd>
-                @{
-                    var status = Model.IsActive == true ? "Actived" : "UnActived";
-                }
-                @Html.DisplayFor(modelItem => status)
-            </dd>
-        </dl>
-    </table>
-   
+<br />
+<div class="col-md-12">
+    <div class="table-responsive">
+        <h4>@Model.Title</h4>
+        <hr />
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Title)</th>
+                    <td>@Html.DisplayFor(model => model.Title)</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.IdCategoryTask)</th>
+                    <td><a href="/CategoryTasks/Details/@Model.IdCategoryTask" title="Click to view details">@Html.DisplayFor(model => model.CategoryTask.Title)</a></td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    <td>@Html.DisplayFor(model => model.Description)</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.FromDate)</th>
+                    <td>@Html.DisplayFor(model => model.FromDate)</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.DeadlineDate)</th>
+                    <td>@Html.DisplayFor(model => model.DeadlineDate)</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.UnitPer)</th>
+                    <td>@Html.DisplayFor(model => model.UnitPer)%</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.IsActived)</th>
+                    <td>
+                        @{
+                            var status = Model.IsActived == true ? "Actived" : "UnActived";
+                        }
+                        @Html.DisplayFor(modelItem => status)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="col-md-offset-1 col-md-11 form-inline">
+    <button class="btn btn-primary" onclick="window.location.href='/Tasks/Manager/@Model.ID'">Edit</button>
+    <button class="btn btn-default" onclick="window.location.href='/Tasks'">List</button>
 </div>
+<div class="clearfix"></div>
+<br />

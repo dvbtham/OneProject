@@ -1,76 +1,74 @@
 @model CRUDCore.Models.CategoryTask
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Title;
 }
-
-<h2>Details</h2>
-
-<div>
-    <h4>CategoryTask</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActived)
-        </dt>
-        <dd>
-           @{
-               var status = Model.IsActived == true ? "Actived" : "UnActived";
-        }
-        @Html.DisplayFor(modelItem => status)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Tasks)
-        </dt>
-        <dd>
-            <table class="table">
+<br />
+<div class="col-md-12">
+    <div class="table-responsive">
+        <h4>@Model.Title</h4>
+        <hr />
+        <table class="table table-bordered">
+            <tbody>
                 <tr>
-                    <th>Title</th>
-                    <th>From Date</th>
-                    <th>Deadline Date</th>
-                    <th>Unit percent</th>
-                    <th>Quick edit</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <td>@Html.DisplayFor(model => model.Title)</td>
                 </tr>
-                @foreach (var item in Model.Tasks)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Title)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FromDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DeadlineDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UnitPer)
-                        </td>
-                        <td>
-                            <a asp-action="Index" asp-controller="Tasks"> List </a> |
-                            <a asp-action="Edit" asp-controller="Tasks" asp-route-id="@item.ID"> Edit </a> |
-                            <a asp-action="Details" asp-controller="Tasks" asp-route-id="@item.ID"> Details </a>
-                        </td>
-                    </tr>
-                }
-            </table>
-        </dd>
-        
-    </dl>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    <td>@Html.DisplayFor(model => model.Description)</td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.IsActived)</th>
+                    <td>
+                        @{
+                            var status = Model.IsActived == true ? "Actived" : "UnActived";
+                        }
+                        @Html.DisplayFor(modelItem => status)
+                    </td>
+                </tr>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Tasks)</th>
+                    <td>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">Title</th>
+                                    <th style="width: 30%">Description</th>
+                                    <th style="width: 10%">From date</th>
+                                    <th style="width: 10%">Deadline date</th>
+                                    <th style="width: 5%">Unit percent</th>
+                                    <th style="width: 10%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Tasks)
+                                {
+                                    <tr>
+                                        <td><a href="/Tasks/Manager/@item.ID" title="Click to view detail">@item.Title</a></td>
+                                        <td>@item.Description</td>
+                                        <td>@item.FromDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.DeadlineDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.UnitPer%</td>
+                                        <td>
+                                            <a href="/Tasks/Manager/@item.ID">Edit</a> |
+                                            <a href="/Tasks/Details/@item.ID">View details</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="col-md-offset-1 col-md-11 form-inline">
+    <button class="btn btn-primary" onclick="window.location.href='/CategoryTasks/Manager/@Model.ID'">Edit</button>
+    <button class="btn btn-default" onclick="window.location.href = '/CategoryTasks'">List</button>
 </div>
+<div class="clearfix"></div>
+<br />

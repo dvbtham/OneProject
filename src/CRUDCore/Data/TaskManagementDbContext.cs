@@ -1,11 +1,15 @@
 ﻿using CRUDCore.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CRUDCore.Data
 {
-    public class SchoolContext : DbContext
+    public class TaskManagementDbContext : DbContext
     {
-        public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
+        public TaskManagementDbContext(DbContextOptions<TaskManagementDbContext> options) : base(options)
         {
         }
 

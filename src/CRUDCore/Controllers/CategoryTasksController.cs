@@ -1,21 +1,18 @@
-using System;
-using System.Collections.Generic;
+using CRUDCore.Data;
+using CRUDCore.Helpers;
+using CRUDCore.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CRUDCore.Data;
-using CRUDCore.Models;
-using CRUDCore.Helpers;
 
 namespace CRUDCore.Controllers
 {
     public class CategoryTasksController : BaseController
     {
-        private readonly SchoolContext _context;
+        private readonly TaskManagementDbContext _context;
 
-        public CategoryTasksController(SchoolContext context)
+        public CategoryTasksController(TaskManagementDbContext context)
         {
             _context = context;
         }
@@ -37,11 +34,74 @@ namespace CRUDCore.Controllers
                 categoryTasks = categoryTasks.Where(x => x.Title.Contains(searchString));
 
             ViewData["CurrentFilter"] = searchString;
-            int pageSize = 3;
-            return View(await PaginatedList<CategoryTask>.CreateAsync(categoryTasks.OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize));
+            int pageSize = 5;
+            var model = await PaginatedList<CategoryTask>.CreateAsync(categoryTasks.OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize);
+            return View(model);
         }
 
-        // GET: CategoryTasks/Details/5
+        public IActionResult Manager(int id)
+        {
+            ViewBag.Id = id;
+            if (id > 0)
+            {
+                var model = _context.CategoryTasks.FirstOrDefault(x => x.ID == id);
+                return View(model);
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Manager(int id, CategoryTask categoryTask)
+        {
+            if (id > 0)
+            {
+                #region Edit
+                if (id != categoryTask.ID)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(categoryTask);
+                        _context.SaveChanges();
+                        SetAlert("Item Updated Successfully", "success");
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!CategoryTaskExists(categoryTask.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction("Index");
+                }
+                return View(categoryTask);
+                #endregion
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(categoryTask);
+                    _context.SaveChanges();
+                    SetAlert("Item Added Successfully", "success");
+                    return RedirectToAction("Index");
+                }
+                return View(categoryTask);
+            }
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,87 +118,12 @@ namespace CRUDCore.Controllers
             return View(categoryTask);
         }
 
-        // GET: CategoryTasks/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CategoryTasks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Description,IsActived,Title")] CategoryTask categoryTask)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(categoryTask);
-                await _context.SaveChangesAsync();
-                SetAlert("Item Added Successfully", "success");
-                return RedirectToAction("Index");
-            }
-            return View(categoryTask);
-        }
-
-        // GET: CategoryTasks/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var categoryTask = await _context.CategoryTasks.SingleOrDefaultAsync(m => m.ID == id);
-            if (categoryTask == null)
-            {
-                return NotFound();
-            }
-            return View(categoryTask);
-        }
-
-        // POST: CategoryTasks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Description,IsActived,Title")] CategoryTask categoryTask)
-        {
-            if (id != categoryTask.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(categoryTask);
-                    await _context.SaveChangesAsync();
-                    SetAlert("Item Updated Successfully", "success");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryTaskExists(categoryTask.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(categoryTask);
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> Delete(int id)
+        public JsonResult Delete(int id)
         {
             try
             {
-                var categoryTask = await _context.CategoryTasks.SingleOrDefaultAsync(m => m.ID == id);
+                var categoryTask = _context.CategoryTasks.SingleOrDefault(m => m.ID == id);
                 if (categoryTask == null)
                     return Json(new
                     {
@@ -146,7 +131,7 @@ namespace CRUDCore.Controllers
                         message = "Not found!"
                     });
                 _context.CategoryTasks.Remove(categoryTask);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 SetAlert("Item Deleted Successfully", "success");
                 return Json(new
                 {

@@ -8,7 +8,7 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-primary" onclick="window.location.href='/Tasks/Manager/0'">Manager</button>
 </p>
 <form asp-action="Index" method="get" class="form-horizontal form-inline">
     <input type="text" class="form-control" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Search by title" />
@@ -36,7 +36,7 @@
                 @Html.DisplayNameFor(model => model.First().UnitPer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().IsActive)
+                @Html.DisplayNameFor(model => model.First().IsActived)
             </th>
             <th></th>
         </tr>
@@ -66,12 +66,12 @@
                 </td>
                 <td>
                     @{
-                        var status = item.IsActive == true ? "Actived" : "UnActived";
+                        var status = item.IsActived == true ? "Actived" : "UnActived";
                     }
                     @Html.DisplayFor(modelItem => status)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Manager" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                     <a href="#" data-id="@item.ID" id="btnTaskDelete">Delete</a>
                 </td>

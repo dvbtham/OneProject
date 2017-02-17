@@ -6,11 +6,11 @@
 }
 
 <h2>Index</h2>
-
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-primary" onclick="window.location.href='/CategoryTasks/Manager/0'">Manager</button>
 </p>
-<form asp-action="Index" method="get" class="form-horizontal form-inline">
+
+<form asp-action="Manager" method="post" class="form-horizontal form-inline">
     <input type="text" class="form-control" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Search by title" />
     <button type="submit" class="btn btn-default">Search</button>
 </form>
@@ -47,7 +47,7 @@
             </td>
             
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Manager" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a href ="#" data-id="@item.ID" id="btnCateTaskDelete">Delete</a>
             </td>

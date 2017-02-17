@@ -1,17 +1,17 @@
 @model CRUDCore.Models.CategoryTask
 
 @{
-    ViewData["Title"] = "Edit";
+    var title = ViewBag.Id > 0 ? "Edit " + Model.Title : "Create new category task";
+    ViewData["Title"] = title;
 }
 
-<h2>Edit</h2>
-
-<form asp-action="Edit">
+<h2>@ViewData["Title"]</h2>
+<form asp-action="Manager">
     <div class="form-horizontal">
-        <h4>CategoryTask</h4>
+        <h4>CategoryTask info.</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="ID" />
         <div class="form-group">
             <label asp-for="Title" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="col-md-offset-2 col-md-10">
@@ -45,10 +45,6 @@
         </div>
     </div>
 </form>
-
-<div>
-    <a asp-action="Index">Cancel</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

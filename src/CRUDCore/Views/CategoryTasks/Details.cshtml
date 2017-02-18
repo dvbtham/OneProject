@@ -47,7 +47,7 @@
                                 @foreach (var item in Model.Tasks)
                                 {
                                     <tr>
-                                        <td><a href="/Tasks/Manager/@item.ID" title="Click to view detail">@item.Title</a></td>
+                                        <td><a href="/Tasks/Details/@item.ID" title="Click to view detail">@item.Title</a></td>
                                         <td>@item.Description</td>
                                         <td>@item.FromDate.ToString("dd/MM/yyyy")</td>
                                         <td>@item.DeadlineDate.ToString("dd/MM/yyyy")</td>

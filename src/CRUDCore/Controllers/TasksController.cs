@@ -4,6 +4,7 @@ using CRUDCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace CRUDCore.Controllers
             _context = context;
         }
         #region Methods
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int page = 1)
         {
             ViewBag.currentFilter = searchString;
             var tasks = from s in _context.Tasks.Include(x => x.CategoryTask) select s;
@@ -35,10 +36,16 @@ namespace CRUDCore.Controllers
 
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 5;
-            var model = await PaginatedList<Tasks>
-                .CreateAsync(tasks.AsNoTracking()
-                .OrderByDescending(x => x.Title)
-                .AsNoTracking(), page ?? 1, pageSize);
+            int totalRow = tasks.Count();
+            tasks = tasks.OrderBy(x => x.ID).Skip((page - 1) * pageSize).Take(pageSize);
+            var model = new PaginatedList<Tasks>()
+            {
+                TotalCount = totalRow,
+                TotalPages = (int)Math.Ceiling((double)totalRow / pageSize),
+                Items = await tasks.ToListAsync(),
+                Page = page,
+                MaxPage = 5
+            };
             return PartialView(CommonConstants._TaskListsPartial, model);
         }
 
@@ -160,8 +167,14 @@ namespace CRUDCore.Controllers
         {
             int pageSize = 5;
             var tasks = _context.Tasks.Where(x => x.IdCategoryTask == id).Include(x => x.CategoryTask);
-            var model = await PaginatedList<Tasks>
-                .CreateAsync(tasks.OrderByDescending(x => x.ID).AsNoTracking(), page, pageSize);
+            var model = new PaginatedList<Tasks>()
+            {
+                TotalCount = tasks.Count(),
+                TotalPages = (int)Math.Ceiling((double)tasks.Count() / pageSize),
+                Items = await tasks.ToListAsync(),
+                Page = page,
+                MaxPage = 5
+            };
             return PartialView(CommonConstants._TaskListsPartial, model);
         }
 

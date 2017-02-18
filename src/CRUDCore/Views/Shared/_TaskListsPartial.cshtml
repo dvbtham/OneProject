@@ -19,31 +19,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().Title)
+                @Html.DisplayNameFor(model => model.Items.First().Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().IdCategoryTask)
+                @Html.DisplayNameFor(model => model.Items.First().IdCategoryTask)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Description)
+                @Html.DisplayNameFor(model => model.Items.First().Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().FromDate)
+                @Html.DisplayNameFor(model => model.Items.First().FromDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().DeadlineDate)
+                @Html.DisplayNameFor(model => model.Items.First().DeadlineDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().UnitPer)
+                @Html.DisplayNameFor(model => model.Items.First().UnitPer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().IsActived)
+                @Html.DisplayNameFor(model => model.Items.First().IsActived)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>
@@ -80,21 +80,52 @@
                         }
     </tbody>
 </table>
+@if (Model.TotalPages > 1)
+{
+    // Create numeric links
+    var startpage = Math.Max(1, Model.Page - Model.MaxPage / 2);
+    var endpage = Math.Min(Model.TotalPages, Model.Page + Model.MaxPage / 2);
 
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    <nav class="text-center">
+        <ul class="pagination">
+            @if (Model.Page > 1)
+            {
+                <li>
+                    <a href="?page=1" data-toggle="tooltip" title="Trang đầu" aria-label="First">
+                        <i class="fa fa-angle-double-left"></i> First
+                    </a>
+                </li>
+                <li>
+                    <a href="?page=@(Model.Page - 1)" data-toggle="tooltip" title="Trang sau" aria-label="Previous">
+                        <i class="fa fa-angle-left"></i> Previous
+                    </a>
+                </li>
+            }
+
+            @for (int i = startpage; i <= endpage; i++)
+            {
+                if (Model.Page == i)
+                {
+                    <li class="active"><a href="?page=@i" data-toggle="tooltip" title="Trang @i">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="?page=@i" data-toggle="tooltip" title="Trang @i">@i</a></li>
+                }
+            }
+            @if (Model.Page < Model.TotalPages)
+            {
+                <li>
+                    <a href="?page=@(Model.Page + 1)" data-toggle="tooltip" title="Trang tiếp theo" aria-label="Next">
+                        <i class="fa fa-angle-right"></i> Next
+                    </a>
+                </li>
+                <li>
+                    <a href="?page=@Model.TotalPages" data-toggle="tooltip" title="Trang cuối" aria-label="Last">
+                        <i class="fa fa-angle-double-right"></i> Last
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 }
-
-<a asp-action="Index" asp-controller="CategoryTasks"
-   asp-route-page="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled btn">
-    Previous
-</a>
-<a asp-action="Index" asp-controller="CategoryTasks"
-   asp-route-page="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled btn">
-    Next
-</a>

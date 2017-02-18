@@ -3,6 +3,7 @@ using CRUDCore.Helpers;
 using CRUDCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace CRUDCore.Controllers
             _context = context;
         }
         #region Methods
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int page = 1)
         {
             ViewBag.currentFilter = searchString;
             var categoryTasks = from s in _context.CategoryTasks select s;
@@ -34,9 +35,16 @@ namespace CRUDCore.Controllers
 
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 5;
-            var model = await PaginatedList<CategoryTask>
-                .CreateAsync(categoryTasks.OrderByDescending(x => x.Title)
-                .AsNoTracking(), page ?? 1, pageSize);
+            int totalRow = categoryTasks.Count();
+            categoryTasks = categoryTasks.OrderBy(x => x.ID).Skip((page - 1) * pageSize).Take(pageSize);
+            var model = new PaginatedList<CategoryTask>()
+            {
+                TotalCount = totalRow,
+                TotalPages = (int)Math.Ceiling((double)totalRow / pageSize),
+                Items = await categoryTasks.ToListAsync(),
+                Page = page,
+                MaxPage = 5
+            };
             return PartialView(CommonConstants._CategoryTaskListsPartial, model);
         }
 
@@ -148,7 +156,7 @@ namespace CRUDCore.Controllers
                 });
             }
         }
-        
+
         private bool CategoryTaskExists(int id)
         {
             return _context.CategoryTasks.Any(e => e.ID == id);

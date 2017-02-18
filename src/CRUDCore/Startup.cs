@@ -72,6 +72,27 @@ namespace CRUDCore
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=CategoryTasks}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                   name: "Category Tasks",
+                   template: "cates",
+                  defaults: new { controller = "CategoryTasks", action = "Index" });
+
+                routes.MapRoute(
+                   name: "Tasks",
+                   template: "tasks",
+                  defaults: new { controller = "Tasks", action = "Index" });
+
+                routes.MapRoute(
+                   name: "Manager Tasks ",
+                   template: "tasks/manager/{id}",
+                  defaults: new { controller = "Tasks", action = "Manager" });
+
+                routes.MapRoute(
+                   name: "Manager Category Tasks",
+                   template: "cates/manager/{id}",
+                  defaults: new { controller = "CategoryTasks", action = "Manager" });
+                
             });
             DbInitializer.Initialize(context);
         }

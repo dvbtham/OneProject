@@ -17,12 +17,12 @@ namespace CRUDCore.Controllers
         {
             _context = context;
         }
-        
+        #region Methods
         public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
             ViewBag.currentFilter = searchString;
             var tasks = from s in _context.Tasks.Include(x => x.CategoryTask) select s;
-            
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 page = 1;
@@ -32,16 +32,16 @@ namespace CRUDCore.Controllers
             {
                 searchString = currentFilter;
             }
-            
+
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 5;
             var model = await PaginatedList<Tasks>
                 .CreateAsync(tasks.AsNoTracking()
                 .OrderByDescending(x => x.Title)
                 .AsNoTracking(), page ?? 1, pageSize);
-            return View(model);
+            return PartialView(CommonConstants._TaskListsPartial, model);
         }
-        
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,14 +55,14 @@ namespace CRUDCore.Controllers
             }
             return View(tasks);
         }
-        
+
         public IActionResult Manager(int id)
         {
             ViewBag.Id = id;
             var cateTasks = from s in _context.CategoryTasks select s;
-            if(id > 0)
+            if (id > 0)
             {
-                var tasks =  _context.Tasks.FirstOrDefault(m => m.ID == id);
+                var tasks = _context.Tasks.FirstOrDefault(m => m.ID == id);
                 tasks.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
                 return View(tasks);
             }
@@ -117,60 +117,13 @@ namespace CRUDCore.Controllers
                 if (ModelState.IsValid)
                 {
                     _context.Add(taskModel);
-                     _context.SaveChanges();
+                    _context.SaveChanges();
                     SetAlert("Item Added Successfully", "success");
                     return RedirectToAction("Index");
                 }
                 return View(taskModel);
                 #endregion
             }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Tasks tasks)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tasks);
-                await _context.SaveChangesAsync();
-                SetAlert("Item Added Successfully", "success");
-                return RedirectToAction("Index");
-            }
-            return View(tasks);
-        }
-        
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Tasks tasks)
-        {
-            if (id != tasks.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tasks);
-                    await _context.SaveChangesAsync();
-                    SetAlert("Item Updated Successfully", "success");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TasksExists(tasks.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(tasks);
         }
 
         [HttpPost]
@@ -203,9 +156,19 @@ namespace CRUDCore.Controllers
             }
         }
 
+        public async Task<IActionResult> TasksByCategory(int id, int page = 1)
+        {
+            int pageSize = 5;
+            var tasks = _context.Tasks.Where(x => x.IdCategoryTask == id).Include(x => x.CategoryTask);
+            var model = await PaginatedList<Tasks>
+                .CreateAsync(tasks.OrderByDescending(x => x.ID).AsNoTracking(), page, pageSize);
+            return PartialView(CommonConstants._TaskListsPartial, model);
+        }
+
         private bool TasksExists(int id)
         {
             return _context.Tasks.Any(e => e.ID == id);
         }
+        #endregion
     }
 }

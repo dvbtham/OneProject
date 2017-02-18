@@ -16,8 +16,7 @@ namespace CRUDCore.Controllers
         {
             _context = context;
         }
-
-        // GET: CategoryTasks
+        #region Methods
         public async Task<IActionResult> Index(string currentFilter, string searchString, int? page)
         {
             ViewBag.currentFilter = searchString;
@@ -35,8 +34,10 @@ namespace CRUDCore.Controllers
 
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 5;
-            var model = await PaginatedList<CategoryTask>.CreateAsync(categoryTasks.OrderByDescending(x => x.Title).AsNoTracking(), page ?? 1, pageSize);
-            return View(model);
+            var model = await PaginatedList<CategoryTask>
+                .CreateAsync(categoryTasks.OrderByDescending(x => x.Title)
+                .AsNoTracking(), page ?? 1, pageSize);
+            return PartialView(CommonConstants._CategoryTaskListsPartial, model);
         }
 
         public IActionResult Manager(int id)
@@ -147,10 +148,11 @@ namespace CRUDCore.Controllers
                 });
             }
         }
-
+        
         private bool CategoryTaskExists(int id)
         {
             return _context.CategoryTasks.Any(e => e.ID == id);
         }
+        #endregion
     }
 }

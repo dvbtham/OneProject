@@ -85,7 +85,6 @@ namespace CRUDCore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Manager(int id, Tasks taskModel)
         {
-            var cateTasks = from s in _context.CategoryTasks select s;
             if (id > 0)
             {
                 #region Edit Tasks

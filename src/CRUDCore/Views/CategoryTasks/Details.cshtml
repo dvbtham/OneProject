@@ -29,39 +29,43 @@
                         @Html.DisplayFor(modelItem => status)
                     </td>
                 </tr>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.Tasks)</th>
-                    <td>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%">Title</th>
-                                    <th style="width: 30%">Description</th>
-                                    <th style="width: 10%">From date</th>
-                                    <th style="width: 10%">Deadline date</th>
-                                    <th style="width: 5%">Unit percent</th>
-                                    <th style="width: 10%">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.Tasks)
-                                {
+                @if (Model.Tasks.Count > 0)
+                {
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Tasks)</th>
+                        <td>
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td><a href="/Tasks/Details/@item.ID" title="Click to view detail">@item.Title</a></td>
-                                        <td>@item.Description</td>
-                                        <td>@item.FromDate.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.DeadlineDate.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.UnitPer%</td>
-                                        <td>
-                                            <a href="/Tasks/Manager/@item.ID">Edit</a> |
-                                            <a href="/Tasks/Details/@item.ID">View details</a>
-                                        </td>
+                                        <th style="width: 20%">Title</th>
+                                        <th style="width: 30%">Description</th>
+                                        <th style="width: 10%">From date</th>
+                                        <th style="width: 10%">Deadline date</th>
+                                        <th style="width: 5%">Unit percent</th>
+                                        <th style="width: 10%">Action</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Tasks)
+                                    {
+                                        <tr>
+                                            <td><a href="/Tasks/Details/@item.ID" title="Click to view detail">@item.Title</a></td>
+                                            <td>@item.Description</td>
+                                            <td>@item.FromDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.DeadlineDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.UnitPer%</td>
+                                            <td>
+                                                <a href="/Tasks/Manager/@item.ID">Edit</a> |
+                                                <a href="/Tasks/Details/@item.ID">View details</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+              
             </tbody>
         </table>
     </div>

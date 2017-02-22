@@ -31,8 +31,7 @@
             },
             success: function (res) {
                 if (res.status) {
-                    alert("Xóa thành công");
-                    window.location.reload();
+                    window.location.href = "/cates";
                 }
                 else {
                     alert(res.message);
@@ -50,8 +49,7 @@
             },
             success: function (res) {
                 if (res.status) {
-                    alert("Xóa thành công");
-                    window.location.reload();
+                    window.location.href = "/tasks";
                 }
                 else {
                     alert(res.message);

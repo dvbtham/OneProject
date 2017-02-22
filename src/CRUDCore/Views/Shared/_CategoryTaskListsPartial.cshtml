@@ -42,10 +42,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @{
-                        var status = item.IsActived == true ? "Actived" : "UnActived";
-                    }
-                    @Html.DisplayFor(modelItem => status)
+                    @Html.DisplayFor(modelItem => item.IsActived)
                 </td>
 
                 <td>
@@ -106,6 +103,4 @@
         </ul>
     </nav>
 }
-    @section scripts{
-        <script src="~/js/deleteItems.js"></script>
-    }
+

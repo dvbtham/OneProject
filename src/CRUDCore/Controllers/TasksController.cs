@@ -85,6 +85,16 @@ namespace CRUDCore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Manager(int id, Tasks taskModel)
         {
+            if (taskModel.UnitPer < 0 || taskModel.UnitPer > 100)
+            {
+                SetAlert("Value is invalid (Value must be between 0 and 100)", "error");
+                return RedirectToAction("Manager");
+            }
+            if (taskModel.DeadlineDate < taskModel.FromDate)
+            {
+                SetAlert("Value is invalid (DeadlineDate value must be greater than FromDate value) ", "error");
+                return RedirectToAction("Manager");
+            }
             if (id > 0)
             {
                 #region Edit Tasks

@@ -23,10 +23,7 @@
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.IsActived)</th>
                     <td>
-                        @{
-                            var status = Model.IsActived == true ? "Actived" : "UnActived";
-                        }
-                        @Html.DisplayFor(modelItem => status)
+                        @Html.DisplayFor(modelItem => modelItem.IsActived)
                     </td>
                 </tr>
                 @if (Model.Tasks.Count > 0)

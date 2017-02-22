@@ -57,19 +57,22 @@
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.FromDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DeadlineDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UnitPer)%
+                    @{
+                        var fromDate = item.FromDate.ToString("d");
+                    }
+                    @Html.DisplayFor(modelItem => fromDate)
                 </td>
                 <td>
                     @{
-                        var status = item.IsActived == true ? "Actived" : "UnActived";
+                        var deadlineDate = item.DeadlineDate.ToString("d");
                     }
-                    @Html.DisplayFor(modelItem => status)
+                    @Html.DisplayFor(modelItem => deadlineDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitPer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActived)
                 </td>
                 <td>
                     <a asp-action="Manager" asp-route-id="@item.ID">Edit</a> |

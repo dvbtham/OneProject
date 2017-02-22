@@ -13,21 +13,25 @@ namespace CRUDCore.Models
         public int IdCategoryTask { get; set; }
 
         [Required]
+        [MaxLength(250)]
         public string Title { get; set; }
 
         [Required]
         [Display(Name = "From Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime FromDate { get; set; }
 
         [Required]
         [Display(Name = "Deadline Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DeadlineDate { get; set; }
 
         public string Description { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0}%")]
         public float UnitPer { get; set; }
 
         [Display(Name = "Status")]

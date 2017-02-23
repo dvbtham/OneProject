@@ -24,7 +24,7 @@ namespace CRUDCore.Models
 
         [Required]
         [Display(Name = "Deadline Date")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date)] 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DeadlineDate { get; set; }
 

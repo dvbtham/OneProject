@@ -23,6 +23,17 @@ textarea {
     line-height: 1.4;
 }
 
+tr .tr-bordered{
+    padding: 10px 10px;
+    border-bottom: 1px solid #000;
+}
+tr .tr-bordered td{
+    padding: 10px 10px;
+}
+
+a.no-style:hover{
+    text-decoration: none;
+}
 /* buttons and links extension to use brackets: [ click me ] */
 .btn-bracketed::before {
     display:inline-block;

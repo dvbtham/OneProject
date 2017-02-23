@@ -2,6 +2,7 @@
 
 @{
     var title = ViewBag.Id > 0 ? "Edit " + Model.Title : "Create new task";
+    var id = ViewBag.Id > 0 ? 1 : -1;
     ViewData["Title"] = title;
 }
 
@@ -38,14 +39,14 @@
         <div class="form-group">
             <label asp-for="FromDate" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="FromDate" type="date" class="form-control" />
+                <input asp-for="FromDate" type="date" id="FromDate" class="form-control" />
                 <span asp-validation-for="FromDate" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <label asp-for="DeadlineDate" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="DeadlineDate" type="date" class="form-control" />
+                <input asp-for="DeadlineDate" type="date" id="DeadlineDate" class="form-control" />
                 <span asp-validation-for="DeadlineDate" class="text-danger" />
             </div>
         </div>
@@ -68,11 +69,10 @@
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-primary" />
                 <input type="button" onclick="window.location.href = '/Tasks/Index'" value="Cancel" class="btn btn-default" />
+                <input type="hidden" data-id="@id" id="myId"/>
             </div>
         </div>
     </div>
 </form>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+

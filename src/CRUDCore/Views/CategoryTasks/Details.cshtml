@@ -33,7 +33,7 @@
                         <td>
                             <table>
                                 <thead>
-                                    <tr>
+                                    <tr class="tr-bordered">
                                         <th style="width: 20%">Title</th>
                                         <th style="width: 30%">Description</th>
                                         <th style="width: 10%">From date</th>
@@ -45,15 +45,15 @@
                                 <tbody>
                                     @foreach (var item in Model.Tasks)
                                     {
-                                        <tr>
+                                        <tr class="tr-bordered">
                                             <td><a href="/Tasks/Details/@item.ID" title="Click to view detail">@item.Title</a></td>
                                             <td>@item.Description</td>
                                             <td>@item.FromDate.ToString("dd/MM/yyyy")</td>
                                             <td>@item.DeadlineDate.ToString("dd/MM/yyyy")</td>
                                             <td>@item.UnitPer%</td>
                                             <td>
-                                                <a href="/Tasks/Manager/@item.ID">Edit</a> |
-                                                <a href="/Tasks/Details/@item.ID">View details</a>
+                                                <a class="no-style" href="/Tasks/Manager/@item.ID"><i class="fa fa-pencil-square-o"></i></a> |
+                                                <a class="no-style" href="/Tasks/Details/@item.ID"><i class="fa fa-eye"></i></a>
                                             </td>
                                         </tr>
                                     }

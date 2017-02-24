@@ -23,32 +23,69 @@ textarea {
     line-height: 1.4;
 }
 
-tr .tr-bordered{
+tr .tr-bordered {
     padding: 10px 10px;
     border-bottom: 1px solid #000;
 }
-tr .tr-bordered td{
-    padding: 10px 10px;
+
+    tr .tr-bordered td {
+        padding: 10px 10px;
+    }
+
+.checkbox label, .checkbox input {
+    padding: 0px;
 }
 
-a.no-style:hover{
+a.no-style:hover {
     text-decoration: none;
+}
+.input-icon {
+  position: relative;
+}
+
+.input-icon > i {
+  position: absolute;
+  display: block;
+  transform: translate(0, -50%);
+  top: 17px;
+  pointer-events: none;
+  width: 25px;
+  text-align: center;
+	font-style: normal;
+}
+
+.input-icon > input {
+  padding-left: 25px;
+	padding-right: 0;
+}
+.input-icon-right:hover > i {
+  display:none;
+}
+
+.input-icon-right > i {
+  right: 33px;
+}
+
+.input-icon-right > input {
+  padding-left: 0;
+  padding-right: 20px;
+  text-align: right;
 }
 /* buttons and links extension to use brackets: [ click me ] */
 .btn-bracketed::before {
-    display:inline-block;
+    display: inline-block;
     content: "[";
     padding-right: 0.5em;
 }
+
 .btn-bracketed::after {
-    display:inline-block;
+    display: inline-block;
     content: "]";
     padding-left: 0.5em;
 }
 
 /* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"]
-{
+.carousel-inner .item img[src$=".svg"] {
     width: 100%;
 }
 
@@ -60,8 +97,8 @@ a.no-style:hover{
 
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
-  /* Hide captions */
-  .carousel-caption {
-    display: none
-  }
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
 }

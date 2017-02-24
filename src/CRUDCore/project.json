@@ -45,7 +45,8 @@
       "type": "build"
     },
     "Microsoft.AspNetCore.Session": "1.1.0",
-    "Microsoft.Extensions.Caching.Memory": "1.1.0"
+    "Microsoft.Extensions.Caching.Memory": "1.1.0",
+    "jQuery.Validation": "1.16.0"
   },
 
   "tools": {

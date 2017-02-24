@@ -90,6 +90,7 @@ namespace CRUDCore.Controllers
                 SetAlert("Value is invalid (Value must be between 0 and 100)", "error");
                 return RedirectToAction("Manager");
             }
+            taskModel.UnitPer = (float)Math.Round(taskModel.UnitPer, 2);
             if (taskModel.DeadlineDate < taskModel.FromDate)
             {
                 SetAlert("Value is invalid (DeadlineDate value must be greater than FromDate value) ", "error");

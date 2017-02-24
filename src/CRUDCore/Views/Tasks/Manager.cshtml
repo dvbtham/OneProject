@@ -6,10 +6,7 @@
     ViewData["Title"] = title;
 }
 
-<h2>@ViewData["Title"]</h2>
-
-
-<form asp-action="Manager" method="post">
+<form asp-action="Manager" method="post" id="managerForm">
     <div class="form-horizontal">
         <h4>Tasks info.</h4>
         <hr />
@@ -52,11 +49,13 @@
         </div>
         <div class="form-group">
             <label asp-for="UnitPer" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="UnitPer" type="number" class="form-control" />
+            <div class="col-md-2 input-icon input-icon-right">
+                <i>%</i>
+                <input asp-for="UnitPer" min="0" max="100" id="unitPer" type="number" class="form-control">
                 <span asp-validation-for="UnitPer" class="text-danger" />
             </div>
         </div>
+        
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="checkbox">
@@ -67,9 +66,9 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" id="save" value="Save" class="btn btn-primary" />
                 <input type="button" onclick="window.location.href = '/Tasks/Index'" value="Cancel" class="btn btn-default" />
-                <input type="hidden" data-id="@id" id="myId"/>
+                <input type="hidden" data-id="@id" id="myId" />
             </div>
         </div>
     </div>

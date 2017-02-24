@@ -5,7 +5,7 @@
     resEvents: function () {
         $("a#btnCateTaskDelete").off('click').on('click', function (e) {
             e.preventDefault();
-            var result = confirm("Are you sure?");
+            var result = confirm("Are you sure to delete?");
             if (result) {
                 var id = $(this).data("id");
                 del.deleteCategoryTasks(id);
@@ -14,7 +14,7 @@
 
         $("a#btnTaskDelete").off('click').on('click', function (e) {
             e.preventDefault();
-            var result = confirm("Are you sure?");
+            var result = confirm("Are you to delete this task?");
             if (result) {
                 var id = $(this).data("id");
                 del.deleteTasks(id);

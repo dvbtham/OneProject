@@ -58,18 +58,21 @@ a.no-style:hover {
   padding-left: 25px;
 	padding-right: 0;
 }
-.input-icon-right:hover > i {
-  display:none;
-}
+
 
 .input-icon-right > i {
-  right: 33px;
+  right: 15px;
 }
 
 .input-icon-right > input {
   padding-left: 0;
   padding-right: 20px;
   text-align: right;
+}
+.no-spin::-webkit-inner-spin-button, .no-spin::-webkit-calendar-picker-indicator {
+  -webkit-appearance: none;
+  display:none;
+  -moz-appearance: none;
 }
 /* buttons and links extension to use brackets: [ click me ] */
 .btn-bracketed::before {

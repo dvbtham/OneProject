@@ -19,22 +19,17 @@ namespace CRUDCore.Controllers
             _context = context;
         }
         #region Methods
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int page = 1)
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             ViewBag.currentFilter = searchString;
             var tasks = from s in _context.Tasks.Include(x => x.CategoryTask) select s;
-
+            
             if (!string.IsNullOrEmpty(searchString))
             {
                 page = 1;
-                tasks = tasks.Where(x => x.Title.Contains(searchString) || x.CategoryTask.Title.Contains(searchString));
+                tasks = tasks.Where(x => x.Title.Contains(searchString.Trim()) || x.CategoryTask.Title.Contains(searchString));
             }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewData["CurrentFilter"] = searchString;
+            
             int pageSize = 5;
             int totalRow = tasks.Count();
             tasks = tasks.OrderBy(x => x.ID).Skip((page - 1) * pageSize).Take(pageSize);
@@ -53,12 +48,12 @@ namespace CRUDCore.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return PageNotFound();
             }
             var tasks = await _context.Tasks.Include(x => x.CategoryTask).FirstOrDefaultAsync(m => m.ID == id);
             if (tasks == null)
             {
-                return NotFound();
+                return PageNotFound();
             }
             return View(tasks);
         }
@@ -70,6 +65,8 @@ namespace CRUDCore.Controllers
             if (id > 0)
             {
                 var tasks = _context.Tasks.FirstOrDefault(m => m.ID == id);
+                if (tasks == null)
+                    return PageNotFound();
                 tasks.CategoryTasks = new SelectList(cateTasks, "ID", "Title");
                 return View(tasks);
             }
@@ -96,51 +93,32 @@ namespace CRUDCore.Controllers
                 SetAlert("Value is invalid (DeadlineDate value must be greater than FromDate value) ", "error");
                 return RedirectToAction("Manager");
             }
-            if (id > 0)
-            {
-                #region Edit Tasks
-                if (id != taskModel.ID)
-                {
-                    return NotFound();
-                }
 
-                if (ModelState.IsValid)
-                {
-                    try
-                    {
-                        _context.Update(taskModel);
-                        _context.SaveChanges();
-                        SetAlert("Item Updated Successfully", "success");
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!TasksExists(taskModel.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    return RedirectToAction("Index");
-                }
-                return View(taskModel);
-                #endregion
-            }
-            else
+            if (ModelState.IsValid)
             {
-                #region Create Tasks
-                if (ModelState.IsValid)
+                if (id > 0)
+                {
+                    if (id != taskModel.ID)
+                    {
+                        return PageNotFound();
+                    }
+                    _context.Update(taskModel);
+                    _context.SaveChanges();
+                    SetAlert(CommonConstants.UpdateSuccess, "success");
+
+                    return RedirectToAction("Index");
+
+                }
+                else
                 {
                     _context.Add(taskModel);
                     _context.SaveChanges();
-                    SetAlert("Item Added Successfully", "success");
+                    SetAlert(CommonConstants.AddSuccess, "success");
                     return RedirectToAction("Index");
                 }
-                return View(taskModel);
-                #endregion
             }
+            return View(taskModel);
+
         }
 
         [HttpPost]
@@ -153,11 +131,11 @@ namespace CRUDCore.Controllers
                     return Json(new
                     {
                         status = false,
-                        message = "Not found!"
+                        message = "Task could not be found!"
                     });
                 _context.Tasks.Remove(task);
                 _context.SaveChanges();
-                SetAlert("Item Deleted Successfully", "success");
+                SetAlert(CommonConstants.DeleteSuccess, "success");
                 return Json(new
                 {
                     status = true
@@ -192,6 +170,7 @@ namespace CRUDCore.Controllers
         {
             return _context.Tasks.Any(e => e.ID == id);
         }
+        
         #endregion
     }
 }

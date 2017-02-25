@@ -26,5 +26,9 @@ namespace CRUDCore.Controllers
                 TempData["AlertType"] = "alert-danger";
             }
         }
+        protected IActionResult PageNotFound()
+        {
+            return RedirectToAction("Index", "Error");
+        }
     }
 }

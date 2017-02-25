@@ -24,11 +24,20 @@
                 </tr>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.FromDate)</th>
-                    <td>@Html.DisplayFor(model => model.FromDate)</td>
+                    <td>
+                        @{
+                            var fromDate = Model.FromDate.ToString("d");
+                        }
+                        @Html.DisplayFor(modelItem => fromDate)
+                    </td>
                 </tr>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.DeadlineDate)</th>
-                    <td>@Html.DisplayFor(model => model.DeadlineDate)</td>
+                    <td>
+                        @{
+                            var deadlineDate = Model.DeadlineDate.ToString("d");
+                        }
+                        @Html.DisplayFor(modelItem => deadlineDate)
                 </tr>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.UnitPer)</th>
@@ -50,3 +59,4 @@
 </div>
 <div class="clearfix"></div>
 <br />
+deadlineDate

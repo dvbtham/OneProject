@@ -5,16 +5,20 @@
     resEvents: function () {
         $("a#btnCateTaskDelete").off('click').on('click', function (e) {
             e.preventDefault();
-            var result = confirm("Are you sure to delete?");
+            var title = $(this).data('title');
+            var result = confirm("Are you sure you want to delete " + title + "?");
+
             if (result) {
                 var id = $(this).data("id");
                 del.deleteCategoryTasks(id);
             }
+
         })
 
         $("a#btnTaskDelete").off('click').on('click', function (e) {
             e.preventDefault();
-            var result = confirm("Are you to delete this task?");
+            var title = $(this).data('title');
+            var result = confirm("Are you sure you want to delete " + title + "?");
             if (result) {
                 var id = $(this).data("id");
                 del.deleteTasks(id);

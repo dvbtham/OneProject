@@ -16,7 +16,7 @@ $('#FromDate, #DeadlineDate').datepicker({
 
 var id = $("#myId").data('id');
 if (id < 0)
-    $("#FromDate, #DeadlineDate").val(output);
+    $("input[type='date']").val(output);
 
 $("#unitPer").off('keypress').on("keypress", function () {
     //validator();

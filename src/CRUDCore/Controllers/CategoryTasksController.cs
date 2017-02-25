@@ -18,22 +18,16 @@ namespace CRUDCore.Controllers
             _context = context;
         }
         #region Methods
-        public async Task<IActionResult> Index(string currentFilter, string searchString, int page = 1)
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             ViewBag.currentFilter = searchString;
             var categoryTasks = from s in _context.CategoryTasks select s;
-            if (searchString != null)
+           
+            if (!string.IsNullOrEmpty(searchString))
             {
                 page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-            if (!string.IsNullOrEmpty(searchString))
-                categoryTasks = categoryTasks.Where(x => x.Title.Contains(searchString));
-
-            ViewData["CurrentFilter"] = searchString;
+                categoryTasks = categoryTasks.Where(x => x.Title.Contains(searchString.Trim()));
+            }                
             int pageSize = 5;
             int totalRow = categoryTasks.Count();
             categoryTasks = categoryTasks.OrderBy(x => x.ID).Skip((page - 1) * pageSize).Take(pageSize);
@@ -66,62 +60,44 @@ namespace CRUDCore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Manager(int id, CategoryTask categoryTask)
         {
-            if (id > 0)
+            if (ModelState.IsValid)
             {
-                #region Edit
-                if (id != categoryTask.ID)
+                if (id > 0)
                 {
-                    return NotFound();
-                }
+                    if (id != categoryTask.ID)
+                    {
+                        return PageNotFound();
+                    }
+                    _context.Update(categoryTask);
+                    _context.SaveChanges();
+                    SetAlert(CommonConstants.UpdateSuccess, "success");
 
-                if (ModelState.IsValid)
-                {
-                    try
-                    {
-                        _context.Update(categoryTask);
-                        _context.SaveChanges();
-                        SetAlert("Item Updated Successfully", "success");
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!CategoryTaskExists(categoryTask.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
                     return RedirectToAction("Index");
                 }
-                return View(categoryTask);
-                #endregion
-            }
-            else
-            {
-                if (ModelState.IsValid)
+                else
                 {
                     _context.Add(categoryTask);
                     _context.SaveChanges();
-                    SetAlert("Item Added Successfully", "success");
+                    SetAlert(CommonConstants.AddSuccess, "success");
                     return RedirectToAction("Index");
+
                 }
-                return View(categoryTask);
             }
+
+            return View(categoryTask);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return PageNotFound();
             }
 
             var categoryTask = await _context.CategoryTasks.Include(x => x.Tasks).SingleOrDefaultAsync(m => m.ID == id);
             if (categoryTask == null)
             {
-                return NotFound();
+                return PageNotFound();
             }
 
             return View(categoryTask);
@@ -141,7 +117,7 @@ namespace CRUDCore.Controllers
                     });
                 _context.CategoryTasks.Remove(categoryTask);
                 _context.SaveChanges();
-                SetAlert("Item Deleted Successfully", "success");
+                SetAlert(CommonConstants.DeleteSuccess, "success");
                 return Json(new
                 {
                     status = true

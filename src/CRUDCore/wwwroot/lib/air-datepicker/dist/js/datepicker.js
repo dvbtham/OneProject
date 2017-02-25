@@ -1138,11 +1138,11 @@
         },
 
         _onKeyUpGeneral: function (e) {
-            var val = this.$el.val();
+            //var val = this.$el.val();
 
-            if (!val) {
-                this.clear();
-            }
+            //if (!val) {
+            //    this.clear();
+            //}
         },
 
         _onResize: function () {
